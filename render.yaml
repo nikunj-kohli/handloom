@@ -1,0 +1,27 @@
+services:
+  - type: web
+    name: handover-lens
+    runtime: python
+    plan: free
+    buildCommand: bash build.sh
+    startCommand: uvicorn backend.app.main:app --host 0.0.0.0 --port $PORT
+    healthCheckPath: /api/health
+    envVars:
+      - key: PYTHON_VERSION
+        value: "3.11.9"
+      - key: LLM_PROVIDER
+        value: auto
+      - key: TRUST_PROXY
+        value: "1"
+      # Set these in the Render dashboard (marked sync:false so they are never
+      # committed). The app runs without them.
+      - key: GROQ_API_KEY
+        sync: false
+      - key: XAI_API_KEY
+        sync: false
+      - key: GEMINI_API_KEY
+        sync: false
+      - key: GITHUB_TOKEN
+        sync: false
+      - key: DATABASE_URL
+        sync: false
