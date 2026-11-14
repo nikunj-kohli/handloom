@@ -1,3 +1,13 @@
+---
+title: Handover Lens
+emoji: 🔎
+colorFrom: indigo
+colorTo: blue
+sdk: docker
+app_port: 7860
+pinned: false
+---
+
 # Handover Lens
 
 Turn scattered engineering activity into a handover that a judge — or a successor — can check.
