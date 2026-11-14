@@ -123,11 +123,27 @@ response is `no-store`. The frontend ships with a strict CSP and no inline event
 .venv/bin/python scripts/smoke_test.py http://127.0.0.1:8000         # end-to-end over HTTP
 ```
 
-## Deploy (Render, one service)
+## Deploy (Docker, one service)
 
-`render.yaml` builds the frontend and runs FastAPI, so one URL serves both — no CORS. Set
-`GROQ_API_KEY`, `GITHUB_TOKEN` and `DATABASE_URL` in the dashboard (never in the repo). Health check
-is `/api/health`; free instances sleep, so expect a cold start and keep a ping on it.
+The `Dockerfile` builds the frontend and runs FastAPI in one container, so one URL serves both — no
+CORS. The server honours `$PORT` (default 7860), so it works on managed hosts unchanged
+(`render.yaml` is kept for Render, which now asks for a card).
+
+Any container host works. A card-free one, verified November 2026:
+
+- **Railway** — new accounts get a $5 credit for 30 days with no card, up to 2 vCPU / 1 GB per service,
+  and it builds this `Dockerfile` straight from the repo. Deploy, then run `railway up` (or connect the
+  repo in the dashboard). After the trial the account drops to a $1/month free plan, so treat it as a
+  demo host.
+
+Hosts that no longer work for free: Render's web service, Hugging Face Docker Spaces (PRO), Koyeb,
+Northflank (signups closed). Back4App's free container destroys its URL 60 minutes after each deploy,
+and Zeabur shuts down on 31 December 2026.
+
+Set `GROQ_API_KEY`, `GITHUB_TOKEN` in the host's secret manager (never in the repo), plus
+`LLM_PROVIDER=groq`, `LLM_MODEL=openai/gpt-oss-120b`, `TRUST_PROXY=1`. Health check is `/api/health`.
+Without any LLM key the offline drafter still runs the full workflow. On hosts with an ephemeral
+filesystem, set `DATABASE_URL` to a managed Postgres if runs must survive a restart.
 
 ## What works, and what does not
 

@@ -17,6 +17,8 @@ RUN pip install --no-cache-dir -r requirements.txt
 COPY backend ./backend
 COPY scripts ./scripts
 COPY --from=frontend /app/frontend/dist ./frontend/dist
-RUN mkdir -p /app/data
+# Writable data dir for any UID: managed hosts run images as a non-root user.
+RUN mkdir -p /app/data && chmod 777 /app/data
 EXPOSE 7860
-CMD ["uvicorn", "backend.app.main:app", "--host", "0.0.0.0", "--port", "7860"]
+# Managed hosts inject their own PORT; 7860 is the default when none is set.
+CMD ["sh", "-c", "exec uvicorn backend.app.main:app --host 0.0.0.0 --port ${PORT:-7860}"]
