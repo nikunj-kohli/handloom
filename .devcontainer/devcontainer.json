@@ -1,0 +1,20 @@
+{
+  "name": "Handover Lens",
+  "image": "mcr.microsoft.com/devcontainers/python:3.11",
+  "features": {
+    "ghcr.io/devcontainers/features/node:1": {
+      "version": "20"
+    }
+  },
+  "forwardPorts": [8000],
+  "portsAttributes": {
+    "8000": {
+      "label": "Handover Lens",
+      "onAutoForward": "notify",
+      "visibility": "public"
+    }
+  },
+  "postCreateCommand": "pip install -r requirements.txt && cd frontend && npm ci && npm run build",
+  "postStartCommand": "nohup python3 -m uvicorn backend.app.main:app --host 0.0.0.0 --port 8000 > /tmp/handover-lens.log 2>&1 & sleep 2; tail -5 /tmp/handover-lens.log",
+  "remoteUser": "vscode"
+}
